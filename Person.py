@@ -19,7 +19,7 @@ class Person(Agent):
         if agent is infected, they can infect other people around them
     
     heal or die
-        if agent is infected, they will heal a certain time after infection
+        if agent is infected, they will heal or die after a certain time after infection
     
     move
         agents move to an empty cell surrounding them 
@@ -54,7 +54,7 @@ class Person(Agent):
                         neighbor.time_healdie = neighbor.time_infected + neighbor.days_ill                
                     
     def heal_or_die(self):
-        """heal after a certain amount of time"""
+        """heal or die afer a certain amount of time"""
         if self.state == 'infected':
             if self.model.schedule.time == self.time_healdie:
                 if self.random.uniform(0,1) <= self.model.death_rate:

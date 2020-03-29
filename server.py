@@ -1,6 +1,6 @@
-from mesa.visualization.modules import CanvasGrid
 from mesa.visualization.ModularVisualization import ModularServer
-from mesa.visualization.modules import ChartModule
+from mesa.visualization.modules import CanvasGrid, ChartModule, TextElement
+from mesa.visualization.UserParam import UserSettableParameter
 
 from model import Pandemic
 
@@ -26,24 +26,33 @@ def agent_portrayal(agent):
     
     return portrayal
 
-grid = CanvasGrid(agent_portrayal, 10, 10, 500, 500)
+grid = CanvasGrid(agent_portrayal, 25, 25, 750, 750)
 
-chart = ChartModule([{
+N_chart = ChartModule([{
     "Label": "N_infected",
-    "Color":"Black"
+    "Color":"Red"
 },
     {"Label":"N_immune",
      "Color":"Green"        
-    }
+    },
+    {"Label":"N_dead",
+    "Color":"Black"}
 
 ], data_collector_name = 'datacollector')
 
+r0_chart = ChartModule([{
+    "Label": "Average r0",
+    "Color":"Black"
+}], data_collector_name = 'datacollector')
+
 server = ModularServer(
     Pandemic,
-    [grid, chart],
+    [grid, N_chart, r0_chart],
     "Pandemic",
-    {"height":10,
-    "width":10,
-    "N":75,
-    "N_initial_infected":2}
+    {"height":25,
+    "width":25,
+    "N":400,
+    "N_initial_infected":UserSettableParameter("slider","Initial number of infected",10,1,100,1),
+    "infect_prob":UserSettableParameter("slider","Infection probability",0.05,0.01,1,0.01),
+     "death_rate":UserSettableParameter("slider","Death rate",0.05,0.01,1,0.01)}
 )
