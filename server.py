@@ -20,6 +20,9 @@ def agent_portrayal(agent):
     elif agent.state == "immune":
         portrayal["Color"] = "green"
         portrayal["Layer"] = 0
+    elif agent.state == "dead":
+        portrayal["Color"] = "black"
+        portrayal["Layer"] = 0
     
     return portrayal
 
