@@ -27,6 +27,7 @@ class Person(Agent):
     def __init__(self, unique_id, model, state):
         super().__init__(unique_id, model)
         self.state = state
+        self.r0 = 0
         
         # Get time when people are infected
         if self.state == 'infected':
@@ -46,6 +47,7 @@ class Person(Agent):
                 # Can only infect people who are healthy
                 if neighbor.state == 'healthy':
                     if self.random.uniform(0,1) < self.model.infect_prob:
+                        self.r0 += 1
                         neighbor.state = 'infected'
                         neighbor.time_infected = self.model.schedule.time
                         neighbor.days_ill = neighbor.random.randint(self.model.min_time_disease, self.model.max_time_disease)
@@ -62,6 +64,8 @@ class Person(Agent):
                 
     def move(self):
         """move to an empty cell near the person"""
+        if self.state == 'dead':
+            return
         neighbors = [cell for cell in (self.model.grid.iter_neighborhood(self.pos, moore=True))]
         self.random.shuffle(neighbors)
         for cell in neighbors:

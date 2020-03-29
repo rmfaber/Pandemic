@@ -30,6 +30,12 @@ def get_N_state(model, state):
     N_state = len(agents_with_state)
     return N_state
 
+def get_average_r0(model):
+    """Get the average R0 for each non-healthy person"""
+    inf_agents_r0 = [agent.r0 for agent in model.schedule.agents if agent.state != 'healthy']
+    average_r0 = sum(inf_agents_r0)/len(inf_agents_r0)
+    return average_r0    
+
 class Pandemic(Model):
     """Modeling an infection spreading across a population"""
     def __init__(self, height=100,width=100,N=500,N_initial_infected=2, infect_prob = 0.05, min_time_disease = 5, max_time_disease = 15, death_rate = 0.05):
@@ -59,12 +65,14 @@ class Pandemic(Model):
         self.datacollector = DataCollector(
             model_reporters = {"N_infected":get_N_infected,
                               "N_immune":get_N_immune,
-                               "N_dead":get_N_dead},
-            agent_reporters = {"State": "state"}
+                               "N_dead":get_N_dead,
+                              "Average r0": get_average_r0},
+            agent_reporters = {"State": "state",
+                              "R0":"r0"}
         )
     
     def check_N_infected(self):
-        N_infected = get_N_infected
+        N_infected = get_N_infected(self)
         if N_infected == 0:
             self.running = False
     
